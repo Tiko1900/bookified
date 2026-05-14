@@ -15,7 +15,7 @@ import VoiceSelector from './VoiceSelector';
 import LoadingOverlay from './LoadingOverlay';
 import {useAuth, useUser} from "@clerk/nextjs";
 import { toast } from 'sonner';
-//import {checkBookExists, createBook, saveBookSegments} from "@/lib/actions/book.actions";
+import {checkBookExists, createBook, saveBookSegments} from "@/lib/actions/book.actions";
 import {useRouter} from "next/navigation";
 import {parsePDFFile} from "@/lib/utils";
 import {upload} from "@vercel/blob/client";
@@ -42,7 +42,7 @@ const UploadForm = () => {
     });
 
     const onSubmit = async (data: BookUploadFormValues) => {
-        {/*if(!userId) {
+        if(!userId) {
            return toast.error("Please login to upload books");
         }
 
@@ -51,7 +51,7 @@ const UploadForm = () => {
         // PostHog -> Track Book Uploads...
 
         try {
-            const existsCheck = '';
+            const existsCheck = await checkBookExists(data.title);
 
             if(existsCheck.exists && existsCheck.book) {
                 toast.info("Book with same title already exists.");
@@ -111,9 +111,6 @@ const UploadForm = () => {
 
             if(!book.success) {
                 toast.error(book.error as string || "Failed to create book");
-                if (book.isBillingError) {
-                    router.push("/subscriptions");
-                }
                 return;
             }
 
@@ -139,7 +136,7 @@ const UploadForm = () => {
             toast.error("Failed to upload book. Please try again later.");
         } finally {
             setIsSubmitting(false);
-        }*/}
+        }
     };
 
     if (!isMounted) return null;
